@@ -1,0 +1,52 @@
+create database Library_Management_System
+
+create table user_details_table (userId int not  null primary key identity, u_FullName varchar(50), u_accountType varchar(20), u_phoneNumber varchar(15), u_age int, u_email varchar(50), u_password varchar(50), u_accountStatus varchar(50))
+account status -> active, pending, rejected
+
+create table book_publisher_table (pubId int not null primary key identity, pub_name varchar(500))
+
+create table feedback_table (fed_Id int not null primary key identity, fed_adminID int, fed_userId int, feedback_content varchar(500), feedback_response varchar(500))
+
+
+CREATE TABLE #Temptable (
+    pub_name VARCHAR(MAX),
+);
+
+BULK INSERT #Temptable
+FROM 'E:\dot net projects\Mini Project\publisher.csv'
+WITH (
+    FIELDTERMINATOR = ',',  
+    ROWTERMINATOR = '\n',
+    FIRSTROW = 1 
+);
+
+INSERT INTO book_publisher_table (pub_name)
+SELECT pub_name FROM #Temptable;
+
+select * from book_publisher_table
+
+create table books_table (book_id int not null primary key identity, b_title varchar(max), b_author varchar(max), b_publisher varchar(max), b_quantity int, )
+
+CREATE TABLE #Temptable (
+    book_title VARCHAR(MAX), book_author varchar(max), book_publisher varchar(max)
+);
+
+BULK INSERT #Temptable
+FROM 'E:\dot net projects\Mini Project\books.csv'
+WITH (
+    FIELDTERMINATOR = ',',  
+    ROWTERMINATOR = '\n',
+    FIRSTROW = 1 
+);
+
+select * from #Temptable
+
+INSERT INTO books_table (b_title, b_author, b_publisher) SELECT book_title, book_author, book_publisher FROM #Temptable;
+
+select * from books_table
+
+update books_table set b_quantity = 10
+
+with cte as (select *, Row_NUMBER() over (order by book_id) as rn from books_table) delete from cte where rn > 5000;
+
+create table transaction_table (transId int not null primary key identity, trans_userID int, trans_bookID int, DOB varchar(15), DOR varchar(15), trans_fine bigint, trans_status varchar(100))
