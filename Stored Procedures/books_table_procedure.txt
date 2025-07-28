@@ -1,0 +1,43 @@
+USE [Library_Management_System]
+GO
+/****** Object:  StoredProcedure [dbo].[books_table_procedure]    Script Date: 28-07-2025 01:08:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[books_table_procedure]
+(@para varchar(50)='', @book_id int=0, @b_title varchar(max)='', @b_author varchar(max)='', @b_publisher varchar(max)='', @b_quantity int=0)
+
+AS
+
+IF @para = 'Get_all_books_list'
+BEGIN
+SELECT * FROM books_table ORDER BY book_id DESC
+END
+
+IF @para = 'update_Book_Count_On_Approval'
+BEGIN
+	update books_table set b_quantity=b_quantity-1 where book_id=@book_id
+END
+
+IF @para = 'delete_Book'
+BEGIN
+	delete from books_table where book_id=@book_id
+END
+
+IF @para = 'get_Book_Details_By_ID'
+BEGIN
+	select * from books_table where book_id=@book_id
+END
+
+IF @para = 'Update_Book_Details'
+BEGIN
+	update books_table set b_title=@b_title, b_author=@b_author, b_publisher=@b_publisher, b_quantity=@b_quantity where book_id=@book_id
+END
+
+IF @para = 'add_New_Book'
+BEGIN
+	insert into books_table values(@b_title, @b_author, @b_publisher, @b_quantity)
+END
+

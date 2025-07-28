@@ -1,0 +1,60 @@
+USE [Library_Management_System]
+GO
+/****** Object:  StoredProcedure [dbo].[user_table_procedure]    Script Date: 28-07-2025 01:09:04 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[user_table_procedure]
+(@parameter varchar(50)='', @userId int=0, @u_FullName varchar(50)='', @u_accountType varchar(20)='', @u_phoneNumber varchar(15)='', 
+@u_age int=0, @u_email varchar(50)='', @u_password varchar(50)='', @u_accountStatus varchar(50)='')
+
+AS
+
+IF @parameter = 'Login_User'
+BEGIN
+ select * from user_details_table where u_email=@u_email and u_password=@u_password and u_accountStatus = 'active'
+END
+
+IF @parameter = 'Register_User'
+BEGIN
+ insert into user_details_table values (@u_FullName, @u_accountType, @u_phoneNumber, @u_age, @u_email, @u_password, @u_accountStatus)
+END
+
+IF @parameter = 'get_Details_By_Id'
+BEGIN
+ select * from user_details_table where userId=@userId
+END
+
+IF @parameter = 'Update_Changes'
+BEGIN
+ update user_details_table set u_FullName=@u_FullName, u_phoneNumber=@u_phoneNumber, u_age=@u_age, u_email=@u_email, u_password=@u_password where userId=@userId
+END
+
+IF @parameter = 'get_All_User_List'
+BEGIN
+ select * from user_details_table where Not u_accountStatus = 'pending' and not u_accountType = 'admin'
+END
+
+
+IF @parameter = 'suspend_Account'
+BEGIN
+  update user_details_table set u_accountStatus=@u_accountStatus where userId=@userId
+END
+
+IF @parameter = 'activate_Account'
+BEGIN
+  update user_details_table set u_accountStatus=@u_accountStatus where userId=@userId
+END
+
+IF @parameter = 'get_All_Membership_Requset_List'
+BEGIN
+ select * from user_details_table where u_accountStatus=@u_accountStatus and not u_accountType = 'admin'
+END
+
+IF @parameter = 'reject_Account'
+BEGIN
+  update user_details_table set u_accountStatus=@u_accountStatus where userId=@userId
+END
+

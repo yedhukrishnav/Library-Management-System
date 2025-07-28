@@ -1,0 +1,62 @@
+USE [Library_Management_System]
+GO
+/****** Object:  StoredProcedure [dbo].[transaction_procedure]    Script Date: 28-07-2025 01:09:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[transaction_procedure]
+(@para varchar(50)='', @transId int=0 , @trans_userID int=0, @trans_bookID int=0, 
+@DOB varchar(15)='', @DOR varchar(15)='', @trans_fine bigint=0, @trans_status varchar(100)='')
+AS
+
+IF @para = 'request_book'
+BEGIN
+insert into transaction_table values (@trans_userID, @trans_bookID, @DOB, @DOR, @trans_fine, @trans_status)
+END
+
+IF @para = 'Get_all_books_Requests'
+BEGIN
+select * from books_table join transaction_table on books_table.book_id = transaction_table.trans_bookID inner join user_details_table on user_details_table.userId = transaction_table.trans_userID where trans_status ='requested'
+END
+
+
+IF @para = 'approve_Request'
+BEGIN
+	update transaction_table set DOB=@DOB, DOR=@DOR, trans_status=@trans_status where transId = @transId
+END
+
+IF @para = 'reject_Request'
+BEGIN
+	update transaction_table set trans_status=@trans_status where transId = @transId
+END
+
+IF @para = 'Get_Fine_Details'
+BEGIN
+SELECT * FROM transaction_table JOIN books_table ON transaction_table.trans_bookID = books_table.book_id INNER JOIN user_details_table ON transaction_table.trans_userID = user_details_table.userId 
+WHERE 
+    TRY_CONVERT(datetime, DOR, 105) < CAST(GETDATE() AS DATE)
+END
+
+IF @para = 'Get_All_Transactions'
+BEGIN
+ select * from transaction_table join books_table on transaction_table.trans_bookID = books_table.book_id inner join user_details_table on transaction_table.trans_userID = user_details_table.userId where not trans_status=@trans_status
+END
+
+IF @para = 'close_Transaction'
+BEGIN
+ update transaction_table set trans_status=@trans_status where transId = @transId
+END
+
+IF @para = 'Get_All_Active_Transactions'
+BEGIN
+ select * from transaction_table join books_table on transaction_table.trans_bookID = books_table.book_id inner join user_details_table on transaction_table.trans_userID = user_details_table.userId where trans_status=@trans_status
+END
+
+IF @para = 'update_Fine'
+BEGIN
+ update transaction_table set trans_fine=@trans_fine where transId = @transId
+END
+
+
