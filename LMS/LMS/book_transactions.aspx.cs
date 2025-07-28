@@ -28,8 +28,24 @@ namespace LMS
             DataTable dt = new DataTable();
             dt = objBal.getAllTransactions();
 
+            DateTime today = DateTime.Today;
+
             if (dt.Rows.Count > 0)
             {
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (DateTime.TryParse(row["DOR"]?.ToString(), out DateTime returnDate))
+                    {
+                        int calculatedFine = (returnDate < today) ? (today - returnDate).Days * 5 : 0;
+                        int existingFine = row["trans_fine"] != DBNull.Value ? Convert.ToInt32(row["trans_fine"]) : 0;
+
+                        if (calculatedFine != existingFine)
+                            objBal.UpdateFine(Convert.ToInt32(row["transId"]), calculatedFine);
+
+                        row["trans_fine"] = calculatedFine;
+                    }
+                }
+
                 rptAllTransactions.DataSource = dt;
                 rptAllTransactions.DataBind();
             }

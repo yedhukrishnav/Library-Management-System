@@ -263,5 +263,35 @@ namespace LMS
                 }
             }
         }
+
+        public int UpdateFine(int transactionId, int calculatedFine)
+        {
+            using (cmd = new SqlCommand("transaction_procedure", conn))
+            {
+                try
+                {
+                    cmd = new SqlCommand("transaction_procedure", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("para", "update_Fine");
+                    cmd.Parameters.AddWithValue("transId", transactionId);
+                    cmd.Parameters.AddWithValue("trans_fine", calculatedFine);
+
+                    if (conn.State.Equals(ConnectionState.Closed))
+                        conn.Open();
+
+                    int result = cmd.ExecuteNonQuery();
+                    conn.Close();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
     }
 }

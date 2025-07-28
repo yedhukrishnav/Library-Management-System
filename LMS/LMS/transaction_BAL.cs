@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using System.Web.Util;
 
 namespace LMS
 {
@@ -55,6 +56,12 @@ namespace LMS
         {
             transaction_DAL objDal = new transaction_DAL();
             return objDal.getActiveTransactions();
+        }
+
+        public int UpdateFine(int transactionId, int calculatedFine)
+        {
+            transaction_DAL objDal = new transaction_DAL();
+            return objDal.UpdateFine(transactionId, calculatedFine);
         }
     }
 }

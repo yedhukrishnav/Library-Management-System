@@ -44,7 +44,11 @@ namespace LMS
             }
 
             // Overdue Books
-            using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM transaction_table WHERE DOR < GETDATE() AND trans_status = 'issued'", conn))
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT COUNT(*) 
+                FROM transaction_table 
+                WHERE TRY_CONVERT(datetime, DOR, 105) < GETDATE()
+                AND trans_status = 'issued'", conn))
             {
                 lblOverdue.Text = cmd.ExecuteScalar().ToString();
             }

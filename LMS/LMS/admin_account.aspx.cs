@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -79,6 +80,14 @@ namespace LMS
             if (!int.TryParse(ageText, out int age))
             {
                 result_label.Text = "Please enter a valid numeric age.";
+                return;
+            }
+
+            // Email format validation
+            string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            if (!Regex.IsMatch(email, emailPattern))
+            {
+                result_label.Text = "Please enter a valid email address.";
                 return;
             }
 

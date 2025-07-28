@@ -5,6 +5,8 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Text.RegularExpressions;
+
 
 namespace LMS
 {
@@ -22,11 +24,21 @@ namespace LMS
         {
             result_label.Visible = true;
             result_label.ForeColor = System.Drawing.Color.Red;
+
             var email = txt_login_email.Text;
             var password = txt_login_password.Text;
+
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
                 result_label.Text = "Please enter both email and password.";
+                return;
+            }
+
+            // Email format validation
+            string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            if (!Regex.IsMatch(email, emailPattern))
+            {
+                result_label.Text = "Please enter a valid email address.";
                 return;
             }
 
